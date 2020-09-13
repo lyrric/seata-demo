@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: @profileActive@
+  application:
+    name: seata-tcc-business
+
+logging:
+  file:
+    name: /data/app/logs/tcc-business/tcc-business.log
+    max-size: 10MB

@@ -1,0 +1,17 @@
+server:
+  port: 8081
+eureka:
+  client:
+    service-url:
+      defaultZone: http://122.51.84.22:8761/eureka
+
+#====================================Seata Config===============================================
+seata:
+  enabled: true
+  application-id: tcc-test
+  tx-service-group: seataGroup-tcc-test
+  service:
+    vgroup-mapping:
+      seataGroup-tcc-test: default
+    grouplist:
+      default: 122.51.84.22:8091

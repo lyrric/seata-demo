@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/seata-tcc?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    username: app
+    password: app
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  redis:
+    host: localhost
+    port: 6379
+    password:
+server:
+  port: 8081
+eureka:
+  client:
+    service-url:
+      defaultZone: http://122.51.84.22:8761/eureka
+
+##====================================Seata Config===============================================
+#seata:
+#  enabled: true
+#  application-id: tcc-test
+#  tx-service-group: seataGroup-tcc-test
+#  service:
+#    vgroup-mapping:
+#      seataGroup-tcc-test: default
+#    grouplist:
+#      default: 122.51.84.22:8091
