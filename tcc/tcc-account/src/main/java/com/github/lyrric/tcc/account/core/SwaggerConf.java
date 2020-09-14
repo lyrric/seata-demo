@@ -24,7 +24,7 @@ public class SwaggerConf {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.github.lyrric.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.github.lyrric.tcc.account.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

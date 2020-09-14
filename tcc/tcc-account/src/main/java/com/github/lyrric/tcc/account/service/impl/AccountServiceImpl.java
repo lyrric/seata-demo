@@ -103,7 +103,7 @@ public class AccountServiceImpl implements AccountService {
         weekend.weekendCriteria()
                 .andEqualTo(InvokeRecord::getXid, xid)
                 .andEqualTo(InvokeRecord::getFunction, function);
-        return invokeRecordMapper.selectCountByExample(function) > 0;
+        return invokeRecordMapper.selectCountByExample(weekend) > 0;
     }
 
     private void saveInvokeRecord(String xid, String function){

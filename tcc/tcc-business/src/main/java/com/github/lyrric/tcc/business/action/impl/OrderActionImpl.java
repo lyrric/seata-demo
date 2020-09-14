@@ -19,30 +19,30 @@ public class OrderActionImpl implements OrderAction {
     private OrderFeign orderFeign;
 
     @Override
-    public HttpResult preOrder(BusinessActionContext actionContext, String username, Integer money) {
+    public boolean preOrder(BusinessActionContext actionContext, String username, Integer money) {
         String xid = actionContext.getXid();
         log.info("invoke orderAction invoke [xid={}]，[money={}]", xid, money);
         HttpResult httpResult = orderFeign.orderPre(xid, username, money);
         checkResult(httpResult, xid);
-        return httpResult;
+        return true;
     }
 
     @Override
-    public HttpResult commit(BusinessActionContext context) {
+    public boolean commit(BusinessActionContext context) {
         String xid = context.getXid();
         log.info("invoke orderAction invoke [xid={}]", xid);
         HttpResult httpResult = orderFeign.commit(xid);
         checkResult(httpResult, xid);
-        return httpResult;
+        return true;
     }
 
     @Override
-    public HttpResult rollback(BusinessActionContext context) {
+    public boolean rollback(BusinessActionContext context) {
         String xid = context.getXid();
         log.info("invoke orderAction rollback  [xid={}]", xid);
         HttpResult httpResult = orderFeign.rollback(xid);
         checkResult(httpResult, xid);
-        return httpResult;
+        return true;
     }
 
     private void checkResult(HttpResult httpResult, String xid){

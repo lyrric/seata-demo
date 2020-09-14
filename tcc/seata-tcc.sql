@@ -52,7 +52,7 @@ CREATE TABLE `account_pre_pay`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `invoke_record`;
 CREATE TABLE `invoke_record`  (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `xid` varchar(11) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事务ID',
   `function` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '操作（格式：PAY_PRE、PAY_COMMIT、PAY_ROLLBACK）',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
@@ -63,8 +63,8 @@ CREATE TABLE `invoke_record`  (
 -- ----------------------------
 -- Table structure for order
 -- ----------------------------
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE `order`  (
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `status` int(2) NULL DEFAULT NULL COMMENT '状态0=无效，，1=有效',
   `money` int(11) NULL DEFAULT NULL COMMENT '订单金额',

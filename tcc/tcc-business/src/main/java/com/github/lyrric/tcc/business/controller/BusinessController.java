@@ -1,7 +1,10 @@
 package com.github.lyrric.tcc.business.controller;
 
+import com.github.lyrric.tcc.business.service.BusinessService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author wangxiaodong
@@ -10,11 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BusinessController {
 
+    @Resource
+    private BusinessService businessService;
 
-    @GetMapping(value = "/test")
-    String index(int id){
-        return "test";
+    @GetMapping(value = "/trade")
+    void index(){
+        businessService.trade();
     }
-
 
 }

@@ -18,8 +18,6 @@ public class AccountActionImpl implements AccountAction {
 
     @Resource
     private AccountFeign accountFeign;
-    @Resource
-    private OrderFeign oderFeign;
 
     /**
      * 预付款
@@ -29,31 +27,31 @@ public class AccountActionImpl implements AccountAction {
      * @param money         预付款金额
      */
     @Override
-    public HttpResult payPre(BusinessActionContext actionContext, String username, Integer money) {
+    public boolean payPre(BusinessActionContext actionContext, String username, Integer money) {
         String xid = actionContext.getXid();
         log.info("invoke AccountAction invoke [xid={}]，[money={}]", xid, money);
         HttpResult httpResult = accountFeign.payPre(xid, username, money);
         checkResult(httpResult, xid);
-        return httpResult;
+        return true;
 
     }
 
     @Override
-    public HttpResult commit(BusinessActionContext context) {
+    public boolean commit(BusinessActionContext context) {
         String xid = context.getXid();
         log.info("invoke AccountAction invoke [xid={}]", xid);
         HttpResult httpResult = accountFeign.commit(xid);
         checkResult(httpResult, xid);
-        return httpResult;
+        return true;
     }
 
     @Override
-    public HttpResult rollback(BusinessActionContext context) {
+    public boolean rollback(BusinessActionContext context) {
         String xid = context.getXid();
         log.info("invoke AccountAction invoke [xid={}", xid);
         HttpResult httpResult = accountFeign.rollback(xid);
         checkResult(httpResult, xid);
-        return httpResult;
+        return true;
     }
 
     private void checkResult(HttpResult httpResult, String xid){

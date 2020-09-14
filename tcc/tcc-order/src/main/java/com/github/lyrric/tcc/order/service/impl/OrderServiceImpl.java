@@ -1,11 +1,10 @@
 package com.github.lyrric.tcc.order.service.impl;
 
 import com.github.lyrric.tcc.order.entity.InvokeRecord;
-import com.github.lyrric.tcc.order.entity.Order;
+import com.github.lyrric.tcc.order.entity.Orders;
 import com.github.lyrric.tcc.order.mapper.InvokeRecordMapper;
 import com.github.lyrric.tcc.order.mapper.OrderMapper;
 import com.github.lyrric.tcc.order.service.OrderService;
-import org.bouncycastle.asn1.esf.OtherRevRefs;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.weekend.Weekend;
@@ -39,12 +38,12 @@ public class OrderServiceImpl implements OrderService {
         if(hasBeenInvoked(xid, ORDER_PRE)){
             return;
         }
-        Order order = new Order();
-        order.setCreateTime(new Date());
-        order.setMoney(money);
-        order.setXid(xid);
-        order.setStatus(0);
-        orderMapper.insert(order);
+        Orders orders = new Orders();
+        orders.setCreateTime(new Date());
+        orders.setMoney(money);
+        orders.setXid(xid);
+        orders.setStatus(0);
+        orderMapper.insert(orders);
         saveInvokeRecord(xid, ORDER_PRE);
     }
 
@@ -57,12 +56,12 @@ public class OrderServiceImpl implements OrderService {
         if(hasBeenInvoked(xid, ORDER_COMMIT)){
             return;
         }
-        Weekend<Order> weekend = new Weekend<>(Order.class);
+        Weekend<Orders> weekend = new Weekend<>(Orders.class);
         weekend.weekendCriteria()
-                .andEqualTo(Order::getXid, xid);
-        Order order = new Order();
-        order.setStatus(1);
-        orderMapper.updateByExampleSelective(order, weekend);
+                .andEqualTo(Orders::getXid, xid);
+        Orders orders = new Orders();
+        orders.setStatus(1);
+        orderMapper.updateByExampleSelective(orders, weekend);
         saveInvokeRecord(xid, ORDER_COMMIT);
     }
 
@@ -77,9 +76,9 @@ public class OrderServiceImpl implements OrderService {
         if(hasBeenInvoked(xid, ORDER_ROLLBACK)){
             return;
         }
-        Weekend<Order> weekend = new Weekend<>(Order.class);
+        Weekend<Orders> weekend = new Weekend<>(Orders.class);
         weekend.weekendCriteria()
-                .andEqualTo(Order::getXid, xid);
+                .andEqualTo(Orders::getXid, xid);
         orderMapper.deleteByExample(weekend);
         saveInvokeRecord(xid, ORDER_ROLLBACK);
     }
@@ -89,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         weekend.weekendCriteria()
                 .andEqualTo(InvokeRecord::getXid, xid)
                 .andEqualTo(InvokeRecord::getFunction, function);
-        return invokeRecordMapper.selectCountByExample(function) > 0;
+        return invokeRecordMapper.selectCountByExample(weekend) > 0;
     }
 
     private void saveInvokeRecord(String xid, String function){

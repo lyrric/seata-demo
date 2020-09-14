@@ -16,9 +16,9 @@ public interface AccountAction {
      * @param money 预付款金额
      */
     @TwoPhaseBusinessAction(name = "account_pay", commitMethod = "commit", rollbackMethod = "rollback")
-    HttpResult payPre(BusinessActionContext actionContext, String username, Integer money);
+    boolean payPre(BusinessActionContext actionContext, String username, Integer money);
 
-    HttpResult commit(BusinessActionContext context);
+    boolean commit(BusinessActionContext context);
 
-    HttpResult rollback(BusinessActionContext context);
+    boolean rollback(BusinessActionContext context);
 }

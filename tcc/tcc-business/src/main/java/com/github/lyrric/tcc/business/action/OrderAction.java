@@ -10,10 +10,10 @@ public interface OrderAction {
 
 
     @TwoPhaseBusinessAction(name = "order", commitMethod = "commit", rollbackMethod = "rollback")
-    HttpResult preOrder(BusinessActionContext actionContext, String username, Integer money);
+    boolean preOrder(BusinessActionContext actionContext, String username, Integer money);
 
-    HttpResult commit(BusinessActionContext context);
+    boolean commit(BusinessActionContext context);
 
-    HttpResult rollback(BusinessActionContext context);
+    boolean rollback(BusinessActionContext context);
 
 }

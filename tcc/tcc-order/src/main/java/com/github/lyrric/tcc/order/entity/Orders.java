@@ -3,7 +3,7 @@ package com.github.lyrric.tcc.order.entity;
 import java.util.Date;
 import javax.persistence.*;
 
-public class Order extends BaseEntity {
+public class Orders extends BaseEntity {
     /**
      * 状态0=无效，，1=有效
      */
