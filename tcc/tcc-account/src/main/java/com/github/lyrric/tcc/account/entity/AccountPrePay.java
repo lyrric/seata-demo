@@ -21,6 +21,11 @@ public class AccountPrePay extends BaseEntity {
     private Integer money;
 
     /**
+     * 状态（0=预扣除，1=commit，2=已回滚）
+     */
+    private Integer status;
+
+    /**
      * 创建时间
      */
     @Column(name = "create_time")
@@ -78,6 +83,24 @@ public class AccountPrePay extends BaseEntity {
      */
     public void setMoney(Integer money) {
         this.money = money;
+    }
+
+    /**
+     * 获取状态（0=预扣除，1=commit，2=已回滚）
+     *
+     * @return status - 状态（0=预扣除，1=commit，2=已回滚）
+     */
+    public Integer getStatus() {
+        return status;
+    }
+
+    /**
+     * 设置状态（0=预扣除，1=commit，2=已回滚）
+     *
+     * @param status 状态（0=预扣除，1=commit，2=已回滚）
+     */
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     /**

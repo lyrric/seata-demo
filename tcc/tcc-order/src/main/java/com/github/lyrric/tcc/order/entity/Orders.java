@@ -5,7 +5,7 @@ import javax.persistence.*;
 
 public class Orders extends BaseEntity {
     /**
-     * 状态0=无效，，1=有效
+     * 状态（0=order_pre，1=order_commit，2=rollback）
      */
     private Integer status;
 
@@ -26,7 +26,7 @@ public class Orders extends BaseEntity {
     private Date createTime;
 
     /**
-     * 获取状态0=无效，，1=有效
+     * 获取状态（0=order_pre，1=order_commit，2=rollback）
      *
      * @return status - 状态0=无效，，1=有效
      */

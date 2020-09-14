@@ -2,10 +2,9 @@ package com.github.lyrric.tcc.business.action.impl;
 
 import com.github.lyrric.tcc.business.action.AccountAction;
 import com.github.lyrric.tcc.business.feign.AccountFeign;
-import com.github.lyrric.tcc.business.feign.OrderFeign;
 import com.github.lyrric.tcc.business.model.BusinessException;
 import com.github.lyrric.tcc.business.model.HttpResult;
-import com.github.lyrric.tcc.common.UnknownException;
+import com.github.lyrric.tcc.common.NoRollbackException;
 import io.seata.rm.tcc.api.BusinessActionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,9 +28,11 @@ public class AccountActionImpl implements AccountAction {
     @Override
     public boolean payPre(BusinessActionContext actionContext, String username, Integer money) {
         String xid = actionContext.getXid();
-        log.info("invoke AccountAction invoke [xid={}]，[money={}]", xid, money);
+        log.info("invoke AccountAction payPre [xid={}]，[money={}]", xid, money);
         HttpResult httpResult = accountFeign.payPre(xid, username, money);
-        checkResult(httpResult, xid);
+        if(!httpResult.getSuccess()){
+            throw new BusinessException("业务异常："+httpResult.getErrMsg());
+        }
         return true;
 
     }
@@ -39,7 +40,7 @@ public class AccountActionImpl implements AccountAction {
     @Override
     public boolean commit(BusinessActionContext context) {
         String xid = context.getXid();
-        log.info("invoke AccountAction invoke [xid={}]", xid);
+        log.info("invoke AccountAction commit [xid={}]", xid);
         HttpResult httpResult = accountFeign.commit(xid);
         checkResult(httpResult, xid);
         return true;
@@ -48,7 +49,7 @@ public class AccountActionImpl implements AccountAction {
     @Override
     public boolean rollback(BusinessActionContext context) {
         String xid = context.getXid();
-        log.info("invoke AccountAction invoke [xid={}", xid);
+        log.info("invoke AccountAction rollback [xid={}", xid);
         HttpResult httpResult = accountFeign.rollback(xid);
         checkResult(httpResult, xid);
         return true;
@@ -61,7 +62,7 @@ public class AccountActionImpl implements AccountAction {
                 throw new BusinessException("业务异常："+httpResult.getErrMsg());
             }else{
                 log.info("发生其他异常[xid={}]", xid);
-                throw new UnknownException("随机异常");
+                throw new NoRollbackException("其它异常："+httpResult.getErrMsg());
             }
         }
     }

@@ -8,6 +8,7 @@
     <result column="xid" jdbcType="VARCHAR" property="xid" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="money" jdbcType="INTEGER" property="money" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
 </mapper>

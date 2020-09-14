@@ -1,6 +1,5 @@
 package com.github.lyrric.tcc.business.action;
 
-import com.github.lyrric.tcc.business.model.HttpResult;
 import io.seata.rm.tcc.api.BusinessActionContext;
 import io.seata.rm.tcc.api.LocalTCC;
 import io.seata.rm.tcc.api.TwoPhaseBusinessAction;

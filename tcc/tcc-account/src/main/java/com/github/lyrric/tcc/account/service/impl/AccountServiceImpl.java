@@ -8,7 +8,6 @@ import com.github.lyrric.tcc.account.mapper.AccountPrePayMapper;
 import com.github.lyrric.tcc.account.mapper.InvokeRecordMapper;
 import com.github.lyrric.tcc.account.model.BusinessException;
 import com.github.lyrric.tcc.account.service.AccountService;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.weekend.Weekend;
@@ -50,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
         accountPrePay.setMoney(money);
         accountPrePay.setUsername(username);
         accountPrePay.setXid(xid);
+        accountPrePay.setStatus(0);
         //这里利用了account_pre_pay表的xid唯一索引，解决了并发问题
         accountPrePayMapper.insert(accountPrePay);
         //利用invoke_record的联合索引也可以
@@ -65,8 +65,11 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public void commit(String xid) {
-        //因为钱已经被预扣除了，所以记录下被调用即可
         if(!hasBeenInvoked(xid, PAY_COMMIT)){
+            //获取预付款数据
+            AccountPrePay accountPrePay = accountPrePayMapper.selectByXidForUpdate(xid);
+            accountPrePay.setStatus(1);
+            accountPrePayMapper.updateByPrimaryKeySelective(accountPrePay);
             saveInvokeRecord(xid, PAY_COMMIT);
         }
     }
@@ -76,18 +79,16 @@ public class AccountServiceImpl implements AccountService {
      * @param xid
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void rollback(String xid) {
         //接口幂等性实现
-        if(hasBeenInvoked(xid, PAY_PRE)){
+        if(hasBeenInvoked(xid, PAY_ROLLBACK)){
             return;
         }
-        //获取预付款数据
-        Weekend<AccountPrePay> weekend = new Weekend<>(AccountPrePay.class);
-        weekend.weekendCriteria()
-                .andEqualTo(AccountPrePay::getXid, xid);
-        AccountPrePay accountPrePay = accountPrePayMapper.selectOneByExample(weekend);
+        AccountPrePay accountPrePay = accountPrePayMapper.selectByXidForUpdate(xid);
         if(accountPrePay != null){
+            accountPrePay.setStatus(2);
+            accountPrePayMapper.updateByPrimaryKeySelective(accountPrePay);
             //锁住用户
             Account account = accountMapper.selectForUpdate(accountPrePay.getUsername());
             account.setBalance(account.getBalance()+accountPrePay.getMoney());

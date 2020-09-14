@@ -4,7 +4,7 @@ import com.github.lyrric.tcc.business.action.OrderAction;
 import com.github.lyrric.tcc.business.feign.OrderFeign;
 import com.github.lyrric.tcc.business.model.BusinessException;
 import com.github.lyrric.tcc.business.model.HttpResult;
-import com.github.lyrric.tcc.common.UnknownException;
+import com.github.lyrric.tcc.common.NoRollbackException;
 import io.seata.rm.tcc.api.BusinessActionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,16 +21,18 @@ public class OrderActionImpl implements OrderAction {
     @Override
     public boolean preOrder(BusinessActionContext actionContext, String username, Integer money) {
         String xid = actionContext.getXid();
-        log.info("invoke orderAction invoke [xid={}]，[money={}]", xid, money);
+        log.info("invoke orderAction preOrder [xid={}]，[money={}]", xid, money);
         HttpResult httpResult = orderFeign.orderPre(xid, username, money);
-        checkResult(httpResult, xid);
+        if(!httpResult.getSuccess()){
+            throw new BusinessException("业务异常："+httpResult.getErrMsg());
+        }
         return true;
     }
 
     @Override
     public boolean commit(BusinessActionContext context) {
         String xid = context.getXid();
-        log.info("invoke orderAction invoke [xid={}]", xid);
+        log.info("invoke orderAction commit [xid={}]", xid);
         HttpResult httpResult = orderFeign.commit(xid);
         checkResult(httpResult, xid);
         return true;
@@ -52,7 +54,7 @@ public class OrderActionImpl implements OrderAction {
                 throw new BusinessException("业务异常："+httpResult.getErrMsg());
             }else{
                 log.info("发生其他异常[xid={}]", xid);
-                throw new UnknownException("随机异常");
+                throw new NoRollbackException("其它异常："+httpResult.getErrMsg());
             }
         }
     }

@@ -4,6 +4,7 @@ import com.github.lyrric.tcc.business.action.AccountAction;
 import com.github.lyrric.tcc.business.action.OrderAction;
 import com.github.lyrric.tcc.business.model.BusinessException;
 import com.github.lyrric.tcc.business.service.BusinessService;
+import com.github.lyrric.tcc.common.NoRollbackException;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class BusinessServiceImpl implements BusinessService {
     private OrderAction orderAction;
 
     @Override
-    @GlobalTransactional(rollbackFor = BusinessException.class)
+    @GlobalTransactional(noRollbackFor = NoRollbackException.class)
     public void trade() {
         final String username = "zhangshan";
         final Integer money = new Random().nextInt(50);

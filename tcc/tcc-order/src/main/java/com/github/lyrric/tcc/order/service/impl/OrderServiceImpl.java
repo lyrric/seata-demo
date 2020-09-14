@@ -4,6 +4,7 @@ import com.github.lyrric.tcc.order.entity.InvokeRecord;
 import com.github.lyrric.tcc.order.entity.Orders;
 import com.github.lyrric.tcc.order.mapper.InvokeRecordMapper;
 import com.github.lyrric.tcc.order.mapper.OrderMapper;
+import com.github.lyrric.tcc.order.model.BusinessException;
 import com.github.lyrric.tcc.order.service.OrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import tk.mybatis.mapper.weekend.Weekend;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Random;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -33,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
      * @param money
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void preOrder(String xid, String username, Integer money) {
         if(hasBeenInvoked(xid, ORDER_PRE)){
             return;
@@ -45,13 +47,18 @@ public class OrderServiceImpl implements OrderService {
         orders.setStatus(0);
         orderMapper.insert(orders);
         saveInvokeRecord(xid, ORDER_PRE);
+        //随机测试回滚情况
+        //throw new BusinessException("preOrder测试回滚失败");
+//        if(new Random().nextBoolean()){
+//            throw new BusinessException("随机回滚");
+//        }
     }
 
     /**
      * @param xid
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void commit(String xid) {
         if(hasBeenInvoked(xid, ORDER_COMMIT)){
             return;
@@ -63,6 +70,9 @@ public class OrderServiceImpl implements OrderService {
         orders.setStatus(1);
         orderMapper.updateByExampleSelective(orders, weekend);
         saveInvokeRecord(xid, ORDER_COMMIT);
+        if(new Random().nextBoolean()){
+            throw new BusinessException("commit异常");
+        }
     }
 
     /**
@@ -71,15 +81,20 @@ public class OrderServiceImpl implements OrderService {
      * @param xid
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void rollback(String xid) {
+        if(new Random().nextBoolean()){
+            throw new BusinessException("rollback异常");
+        }
         if(hasBeenInvoked(xid, ORDER_ROLLBACK)){
             return;
         }
         Weekend<Orders> weekend = new Weekend<>(Orders.class);
         weekend.weekendCriteria()
                 .andEqualTo(Orders::getXid, xid);
-        orderMapper.deleteByExample(weekend);
+        Orders orders = new Orders();
+        orders.setStatus(2);
+        orderMapper.updateByExampleSelective(orders, weekend);
         saveInvokeRecord(xid, ORDER_ROLLBACK);
     }
 
