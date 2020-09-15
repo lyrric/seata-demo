@@ -10,7 +10,12 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>tcc</module>
-    </modules>
+        <module>untitled</module>
+        <module>at</module>
+        <module>at-account</module>
+        <module>at-account</module>
+		<module>at-common</module>
+	</modules>
 
 
 </project>

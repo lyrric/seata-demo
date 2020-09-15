@@ -4,7 +4,7 @@ import com.github.lyrric.tcc.business.action.AccountAction;
 import com.github.lyrric.tcc.business.feign.AccountFeign;
 import com.github.lyrric.tcc.business.model.BusinessException;
 import com.github.lyrric.tcc.business.model.HttpResult;
-import com.github.lyrric.tcc.common.NoRollbackException;
+import com.github.lyrric.tcc.common.OtherException;
 import io.seata.rm.tcc.api.BusinessActionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,7 +62,7 @@ public class AccountActionImpl implements AccountAction {
                 throw new BusinessException("业务异常："+httpResult.getErrMsg());
             }else{
                 log.info("发生其他异常[xid={}]", xid);
-                throw new NoRollbackException("其它异常："+httpResult.getErrMsg());
+                throw new OtherException("其它异常："+httpResult.getErrMsg());
             }
         }
     }

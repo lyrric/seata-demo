@@ -1,9 +1,9 @@
-package com.github.lyrric.tcc.business.service.impl;
+package com.github.lyrric.at.business.service.impl;
 
-import com.github.lyrric.tcc.business.action.AccountAction;
-import com.github.lyrric.tcc.business.action.OrderAction;
-import com.github.lyrric.tcc.business.model.BusinessException;
-import com.github.lyrric.tcc.business.service.BusinessService;
+import com.github.lyrric.at.business.action.AccountAction;
+import com.github.lyrric.at.business.action.OrderAction;
+import com.github.lyrric.at.business.model.BusinessException;
+import com.github.lyrric.at.business.service.BusinessService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class BusinessServiceImpl implements BusinessService {
     public void trade() {
         final String username = "zhangshan";
         final Integer money = new Random().nextInt(50);
-        accountAction.payPre(null, username, money);
-        orderAction.preOrder(null, username, money);
+        accountAction.pay(null, username, money);
+        orderAction.order(null, username, money);
     }
 }
