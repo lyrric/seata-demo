@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/seata-at?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+      username: app
+      password: app
+server:
+  port: 8081
+eureka:
+  client:
+    service-url:
+      defaultZone: http://122.51.84.22:8761/eureka
+#====================================Seata Config===============================================
+seata:
+  enabled: true
+  application-id: seata-at-account
+  tx-service-group: seata-group-at-test
+  service:
+    vgroup-mapping:
+      seata-group-at-test: default
+    grouplist:
+      default: 122.51.84.22:8091

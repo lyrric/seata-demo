@@ -1,0 +1,40 @@
+spring:
+  datasource:
+#    type: com.zaxxer.hikari.HikariDataSource
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+#    username:
+#    password:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/seata-at?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+      username: app
+      password: app
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: seata-group-at-test
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://122.51.84.22:8761/eureka
+#====================================Seata Config===============================================
+seata:
+  enabled: true
+  application-id: seata-at-business
+  tx-service-group: seata-group-at-test
+  service:
+    vgroup-mapping:
+      seata-group-at-test: default
+    grouplist:
+      default: 122.51.84.22:8091
+  registry:
+    type: file
+#    eureka:
+#      application: seata-at-business
+#      service-url: http://122.51.84.22:8761/eureka
